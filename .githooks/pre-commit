@@ -1,0 +1,53 @@
+#!/bin/sh
+# Reject commits unless author/committer are on the allow list and not AI/agent identities.
+
+set -e
+
+HOOK_DIR=$(dirname "$0")
+ALLOWED_FILE="$HOOK_DIR/allowed-authors"
+
+extract_email() {
+  printf '%s\n' "$1" | sed -n 's/.*<\([^>]*\)>.*/\1/p' | tr '[:upper:]' '[:lower:]'
+}
+
+is_blocked_agent_email() {
+  email=$(printf '%s' "$1" | tr '[:upper:]' '[:lower:]')
+  case "$email" in
+    *cursor* | *copilot* | *openai* | *composer* | *devin* | *sweep* | *codegen* | *dependabot* | *github-actions* | *\[bot\]*)
+      return 0
+      ;;
+  esac
+  printf '%s' "$email" | grep -Eiq '@.*bot\.|bots?\.|agent\.|ai\.' && return 0
+  return 1
+}
+
+is_allowed_email() {
+  email=$(printf '%s' "$1" | tr '[:upper:]' '[:lower:]')
+  [ -f "$ALLOWED_FILE" ] && grep -Fxq "$email" "$ALLOWED_FILE"
+}
+
+check_identity() {
+  role=$1
+  ident=$2
+  email=$(extract_email "$ident")
+
+  if [ -z "$email" ]; then
+    printf 'ERROR: Could not read %s email from git identity.\n' "$role" >&2
+    exit 1
+  fi
+
+  if is_blocked_agent_email "$email"; then
+    printf 'ERROR: %s email "%s" matches a blocked AI/agent pattern.\n' "$role" "$email" >&2
+    printf 'AI agents must never appear as contributors in this repository.\n' >&2
+    exit 1
+  fi
+
+  if ! is_allowed_email "$email"; then
+    printf 'ERROR: %s email "%s" is not listed in .githooks/allowed-authors.\n' "$role" "$email" >&2
+    printf 'Add your human email to that file or run scripts/setup-git-hooks.sh after cloning.\n' >&2
+    exit 1
+  fi
+}
+
+check_identity "Author" "$(git var GIT_AUTHOR_IDENT)"
+check_identity "Committer" "$(git var GIT_COMMITTER_IDENT)"

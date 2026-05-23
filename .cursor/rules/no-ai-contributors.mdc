@@ -1,0 +1,23 @@
+---
+description: Never attribute git commits or co-authorship to AI agents in this repository.
+alwaysApply: true
+---
+
+# No AI contributors
+
+This repository must never show AI agents as GitHub contributors.
+
+When creating git commits:
+
+- Never use `git commit --author=...`
+- Never set `GIT_AUTHOR_*` or `GIT_COMMITTER_*` environment variables
+- Never add `Co-authored-by:` trailers for Cursor, Composer, Copilot, Devin, or any AI/bot
+- Never use agent, bot, cursor, copilot, or noreply AI email addresses
+- Always commit with the repository owner's configured git identity only
+
+Repository enforcement:
+
+- Git hooks in `.githooks/` validate author/committer against `.githooks/allowed-authors`
+- Run `scripts/setup-git-hooks.sh` after clone to enable hooks
+
+If the user asks you to commit, use normal `git commit` with no author overrides.
