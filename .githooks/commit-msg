@@ -3,7 +3,7 @@
 
 MSG_FILE=$1
 
-if grep -Eiq '^Co-[Aa]uthored-by:.*(cursor|copilot|openai|composer|devin|sweep|codegen|dependabot|github-actions|\[bot\]|agent@|ai@|bot@)' "$MSG_FILE"; then
+if grep -Eiq '^Co-[Aa]uthored-by:.*(cursor|cursoragent|copilot|openai|composer|devin|sweep|codegen|dependabot|github-actions|\[bot\]|agent@|ai@|bot@)' "$MSG_FILE"; then
   printf 'ERROR: Co-authored-by lines from AI/agents are not allowed.\n' >&2
   exit 1
 fi

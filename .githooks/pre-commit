@@ -13,7 +13,7 @@ extract_email() {
 is_blocked_agent_email() {
   email=$(printf '%s' "$1" | tr '[:upper:]' '[:lower:]')
   case "$email" in
-    *cursor* | *copilot* | *openai* | *composer* | *devin* | *sweep* | *codegen* | *dependabot* | *github-actions* | *\[bot\]*)
+    *cursor* | *cursoragent* | *copilot* | *openai* | *composer* | *devin* | *sweep* | *codegen* | *dependabot* | *github-actions* | *\[bot\]*)
       return 0
       ;;
   esac

@@ -33,8 +33,12 @@ if printf '%s' "$command" | grep -Eiq 'co-authored-by|trailer[[:space:]]+Co-auth
   deny
 fi
 
-# Known agent identity strings in commit commands
-if printf '%s' "$command" | grep -Eiq 'cursor|copilot|openai|composer|devin|sweep-ai|codegen|\[bot\]|dependabot|github-actions'; then
+# Agent email addresses in author/committer overrides only
+if printf '%s' "$command" | grep -Eiq '(--author=|GIT_(AUTHOR|COMMITTER)_(NAME|EMAIL)=|-c[[:space:]]+user\.(name|email)=).*@(cursor\.com|cursoragent\.com|users\.noreply\.github\.com)'; then
+  deny
+fi
+
+if printf '%s' "$command" | grep -Eiq 'Co-authored-by:.*@(cursor\.com|cursoragent\.com)'; then
   deny
 fi
 
