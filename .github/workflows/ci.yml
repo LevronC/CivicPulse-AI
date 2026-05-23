@@ -5,7 +5,7 @@ on:
   pull_request:
 
 jobs:
-  api:
+  api-lint:
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -16,7 +16,24 @@ jobs:
         with:
           python-version: "3.11"
       - run: pip install -r requirements.txt
-      - run: python -m py_compile main.py services/*.py
+      - run: python -m py_compile main.py
+      - run: python -m py_compile src/config/settings.py src/contracts/enums.py src/contracts/articles.py src/contracts/events.py src/contracts/pagination.py
+      - run: python -m py_compile src/errors/base.py src/middleware/auth.py src/middleware/correlation.py src/middleware/rate_limiter.py
+      - run: python -m py_compile src/repositories/database.py src/repositories/db_models.py src/repositories/article_repo.py src/repositories/event_repo.py
+      - run: python -m py_compile src/services/ingestion/dedupe.py src/services/ingestion/ingest_service.py src/services/ingestion/source_adapter.py
+      - run: python -m py_compile src/services/nlp/stages.py src/services/nlp/enrichment_service.py
+      - run: python -m py_compile src/services/events/cluster_service.py src/services/events/scoring.py src/services/events/event_builder.py
+      - run: python -m py_compile src/routes/health.py src/routes/ingest.py src/routes/enrich.py src/routes/events.py src/routes/stream.py
+
+  api-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install -r apps/api/requirements.txt
+      - run: python -m pytest tests/ -v --tb=short
 
   web:
     runs-on: ubuntu-latest
