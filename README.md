@@ -224,6 +224,7 @@ Or run the SQL file against your local Postgres instance directly.
 ## Documentation
 
 - [Architecture](docs/ARCHITECTURE.md) — data flow and component boundaries
+- [Architecture diagrams](docs/ARCHITECTURE_DIAGRAMS.md) — mermaid pipeline, graph, and intelligence pathways
 - [Implementation plan](docs/IMPLEMENTATION_PLAN.md) — phased delivery checklist
 - [Deployment](docs/DEPLOYMENT.md) — production deployment notes
 
