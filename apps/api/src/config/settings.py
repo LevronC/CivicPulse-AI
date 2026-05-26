@@ -11,19 +11,30 @@ preventing runtime surprises from misconfigured deployments.
 from functools import lru_cache
 from pathlib import Path
 
-from pydantic import Field
+from pydantic import Field, field_validator
 from pydantic_settings import BaseSettings
+
+from src.config.database_url import normalize_database_url, resolve_database_url
 
 _ENV_FILE = Path(__file__).resolve().parents[4] / ".env"
 
 
 class DatabaseSettings(BaseSettings):
     url: str = Field(
-        default="postgresql+psycopg://civicpulse:civicpulse@localhost:5432/civicpulse",
+        default_factory=resolve_database_url,
         alias="DATABASE_URL",
     )
-    pool_size: int = Field(default=5, alias="DB_POOL_SIZE")
-    pool_overflow: int = Field(default=10, alias="DB_POOL_OVERFLOW")
+    pool_size: int = Field(default=1, alias="DB_POOL_SIZE")
+    pool_overflow: int = Field(default=0, alias="DB_POOL_OVERFLOW")
+
+    @field_validator("url", mode="before")
+    @classmethod
+    def coerce_database_url(cls, value: object) -> str:
+        if isinstance(value, str):
+            cleaned = value.strip().strip('"').strip("'")
+            if cleaned:
+                return normalize_database_url(cleaned)
+        return resolve_database_url()
 
 
 class RedisSettings(BaseSettings):

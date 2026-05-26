@@ -1,4 +1,7 @@
 .env
+.env.*
+!.env.example
+apps/api/.env.vercel.local
 .venv/
 __pycache__/
 .pytest_cache/

@@ -47,6 +47,23 @@ async function proxy(req: NextRequest, path: string[]): Promise<Response> {
 
   const upstream = await fetch(target, init);
 
+  if (!upstream.ok && upstream.status >= 500) {
+    const detail = await upstream.text();
+    return new Response(
+      JSON.stringify({
+        error: {
+          code: "UPSTREAM_ERROR",
+          message: "Backend API unavailable",
+          detail: detail.slice(0, 200),
+        },
+      }),
+      {
+        status: upstream.status,
+        headers: { "content-type": "application/json", "cache-control": "no-cache" },
+      }
+    );
+  }
+
   return new Response(upstream.body, {
     status: upstream.status,
     headers: {
