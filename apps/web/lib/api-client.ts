@@ -19,8 +19,9 @@ import type {
   PaginatedResponse,
   TopEntityItem,
 } from "./types";
+import { getApiBase } from "./api-base";
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+const API_BASE = getApiBase();
 
 class ApiError extends Error {
   constructor(

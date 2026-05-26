@@ -120,6 +120,17 @@ python worker.py
 
 Open **http://localhost:3000** (dashboard) · API docs at **http://localhost:8000/docs**
 
+## Deploy to Vercel
+
+The **Next.js dashboard** deploys to Vercel. The **FastAPI API** runs on Railway, Render, or similar (see [Deployment](docs/DEPLOYMENT.md)).
+
+1. Import repo at [vercel.com/new](https://vercel.com/new) with **Root Directory** = `apps/web`
+2. Set `API_URL` to your deployed FastAPI URL
+3. Set `API_KEY` if your API requires it
+4. Deploy
+
+The web app proxies `/api/*` to your backend so preview URLs work without CORS issues.
+
 ### 5. Run the pipeline (first time)
 
 All mutating requests require `x-api-key: dev-api-key` (see `.env.example`).

@@ -1,0 +1,11 @@
+.venv
+apps/api
+apps/workers
+tests
+infra
+docs
+packages
+docker-compose.yml
+pytest.ini
+.githooks
+.cursor

@@ -2,8 +2,9 @@
 
 import { useEffect, useRef, useState } from "react";
 import type { EventSummary } from "../../../lib/types";
+import { getApiBase } from "../../../lib/api-base";
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+const API_BASE = getApiBase();
 
 /**
  * SSE hook for realtime event updates.
