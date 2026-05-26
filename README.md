@@ -89,7 +89,7 @@ Starts PostgreSQL, Redis, and MinIO.
 ```bash
 python3 -m venv .venv
 source .venv/bin/activate
-pip install -r apps/api/requirements.txt
+pip install -r apps/api/requirements-dev.txt
 
 cd apps/web && npm install && cd ../..
 ```

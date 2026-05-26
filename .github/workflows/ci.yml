@@ -15,7 +15,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-      - run: pip install -r requirements.txt
+      - run: pip install -r requirements-dev.txt
       - run: python -m py_compile main.py
       - run: python -m py_compile src/config/settings.py src/contracts/enums.py src/contracts/articles.py src/contracts/events.py src/contracts/pagination.py
       - run: python -m py_compile src/errors/base.py src/middleware/auth.py src/middleware/correlation.py src/middleware/rate_limiter.py
@@ -32,7 +32,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-      - run: pip install -r apps/api/requirements.txt
+      - run: pip install -r apps/api/requirements-dev.txt
       - run: python -m pytest tests/ -v --tb=short
 
   web:

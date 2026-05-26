@@ -4,20 +4,20 @@ Detailed execution plan: see `docs/IMPLEMENTATION_PLAN.md`.
 
 ## Architecture on Vercel
 
-CivicPulse is a **split deployment**:
+Both CivicPulse services deploy to Vercel as separate projects:
 
-| Component | Platform | Notes |
-|-----------|----------|-------|
-| **Dashboard** (`apps/web`) | **Vercel** | Next.js 14 — native fit |
-| **API** (`apps/api`) | Railway, Render, Fly.io, etc. | FastAPI + PostgreSQL + optional ML models |
-| **Database** | Neon, Supabase, or Railway Postgres | Vercel Marketplace (Neon) works well |
-| **Worker** (`apps/workers`) | Same host as API or cron | Ingest/enrich pipeline jobs |
+| Project | Root directory | Production URL |
+|---------|----------------|----------------|
+| **web** | `apps/web` | https://web-levroncs-projects.vercel.app (or your alias) |
+| **civicpulse-api** | `apps/api` | https://civicpulse-api.vercel.app |
 
-The Next.js app proxies API calls through `/api/*` so the browser stays same-origin on Vercel. Set `API_URL` to your deployed FastAPI base URL.
+The dashboard proxies `/api/*` → `API_URL` (set to the API project URL).
 
 ```
-Browser → Vercel (Next.js) → /api/* proxy → FastAPI → PostgreSQL
+Browser → web (Vercel) → /api proxy → civicpulse-api (Vercel) → PostgreSQL (Neon)
 ```
+
+**Important:** The API uses `EMBEDDING_MODEL=heuristic` on Vercel (ML deps exceed serverless limits). Connect **Neon Postgres** via Vercel Marketplace and set `DATABASE_URL` on the `civicpulse-api` project.
 
 ## Deploy dashboard to Vercel
 
